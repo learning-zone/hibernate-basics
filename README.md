@@ -1,4 +1,4 @@
-# Hibernate Interview Questions
+# Hibernate Basics
 
 *Click <img src="assets/star.png" width="18" height="18" align="absmiddle" title="Star" /> if you like the project. Pull Request are highly appreciated.*
 
@@ -107,9 +107,11 @@ public class EmployeeEntity {
     }
 }
 ```
-**Step 03: Create JPA Repository**  
+
+**Step 03: Create JPA Repository:**
 
 Extend `JpaRepository` interface to allows to create repository implementations automatically, at runtime, for any given entity class. The types of entity class and it’s ID field are specified in the generic parameters on JpaRepository.
+
 ```java
 /** EmployeeRepository.java **/
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -122,12 +124,14 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
  
 }
 ```
+
 By this simple extension, EmployeeRepository inherits several methods for working with Employee persistence, including methods for saving, deleting, and finding Employee entities.
 
-**Step 04: Properties Configuration**  
+**Step 04: Properties Configuration:**
 
-**application.properties**  
-```
+**application.properties:**
+
+```properties
 spring.datasource.url=jdbc:h2:file:~/test
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
@@ -155,6 +159,7 @@ logging.level.org.hibernate.stat=debug
  
 spring.jpa.hibernate.ddl-auto=none
 ```
+
 ```sql
 ## schama.sql
 DROP TABLE IF EXISTS TBL_EMPLOYEES;
@@ -174,11 +179,13 @@ VALUES
     ('Deja', 'Vu', 'xyz@email.com'),
     ('Caption', 'America', 'cap@marvel.com');
 ```
-**Step 05. Spring boot hibernate demo**  
+
+**Step 05. Spring boot hibernate demo:**
 
 To test hibernate configuration with Spring boot, we need to autowire the EmployeeRepository dependency in a class and use it’s method to save or fetch employee entities.
 
-**SpringBoot2DemoApplication.java**  
+**SpringBoot2DemoApplication.java:**
+
 ```java
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -211,8 +218,10 @@ public class SpringBoot2DemoApplication implements CommandLineRunner {
     }
 }
 ```
+
 Output
-```
+
+```java
 Tomcat initialized with port(s): 8080 (http)
 Starting service [Tomcat]
 Starting Servlet engine: [Apache Tomcat/9.0.19]
@@ -249,11 +258,13 @@ Hibernate:
  
 Employee id 2 -> EmployeeEntity [id=2, firstName=Deja, lastName=Vu, email=xyz@email.com]
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. Mention the differences between JPA and Hibernate?
+
 JPA is a specification for accessing, persisting and managing the data between Java objects and the relational database. 
 
 Where as, Hibernate is the actual implementation of JPA guidelines. When hibernate implements the JPA specification, this will be certified by the JPA group upon following all the standards mentioned in the specification. For example, JPA guidelines would provide information of mandatory and optional features to be implemented as part of the JPA implementation.
@@ -267,6 +278,7 @@ Where as, Hibernate is the actual implementation of JPA guidelines. When hiberna
 |The Query language in this is Hibernate Query Language.|The query language of JPA is JPQL (Java Persistence Query Language)|
 
 ## Q. What is HQL and what are its benefits?
+
 Hibernate Query Language (HQL) is an object-oriented query language, similar to SQL, but instead of operating on tables and columns, HQL works with persistent objects and their properties. HQL queries are translated by Hibernate into conventional SQL queries, which in turns perform action on database.
 
 **Advantages Of HQL:**  
@@ -275,9 +287,10 @@ Hibernate Query Language (HQL) is an object-oriented query language, similar to 
 * HQL supports object oriented features like Inheritance, polymorphism,Associations(Relation ships)
 * HQL is initially given for selecting object from database and in hibernate 3.x we can doDML operations ( insert, update…) too
 
-**Different Ways Of Construction HQL Select**  
+**Different Ways Of Construction HQL Select:**
 
-**FROM Clause**
+**FROM Clause:**
+
 ```sql
 /** In SQL **/
 sql> select * from Employee
@@ -287,38 +300,50 @@ String hql = "FROM Employee";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**AS Clause**
+
+**AS Clause:**
+
 ```sql
 String hql = "FROM Employee AS E";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**SELECT Clause**
+
+**SELECT Clause:**
+
 ```sql
 String hql = "SELECT E.firstName FROM Employee E";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**WHERE Clause**  
+
+**WHERE Clause:**
+
 ```sql
 String hql = "FROM Employee E WHERE E.id = 10";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**ORDER BY Clause**
+
+**ORDER BY Clause:**
+
 ```sql
 String hql = "FROM Employee E WHERE E.id > 10 ORDER BY E.salary DESC";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**GROUP BY Clause**
+
+**GROUP BY Clause:**
+
 ```sql
 String hql = "SELECT SUM(E.salary), E.firtName FROM Employee E " +
              "GROUP BY E.firstName";
 Query query = session.createQuery(hql);
 List results = query.list();
 ```
-**Using Named Parameters**  
+
+**Using Named Parameters:**
+
 Hibernate supports named parameters in its HQL queries. This makes writing HQL queries that accept input from the user easy and you do not have to defend against SQL injection attacks. Following is the simple syntax of using named parameters −
 
 ```sql
@@ -327,7 +352,9 @@ Query query = session.createQuery(hql);
 query.setParameter("employee_id",10);
 List results = query.list();
 ```
-**UPDATE Clause**  
+
+**UPDATE Clause:**
+
 ```sql
 String hql = "UPDATE Employee set salary = :salary "  + 
              "WHERE id = :employee_id";
@@ -337,7 +364,9 @@ query.setParameter("employee_id", 10);
 int result = query.executeUpdate();
 System.out.println("Rows affected: " + result);
 ```
-**DELETE Clause**  
+
+**DELETE Clause:**
+
 ```sql
 String hql = "DELETE FROM Employee "  + 
              "WHERE id = :employee_id";
@@ -346,7 +375,9 @@ query.setParameter("employee_id", 10);
 int result = query.executeUpdate();
 System.out.println("Rows affected: " + result);
 ```
-**INSERT Clause**
+
+**INSERT Clause:**
+
 ```sql
 String hql = "INSERT INTO Employee(firstName, lastName, salary)"  + 
              "SELECT firstName, lastName, salary FROM old_employee";
@@ -354,7 +385,9 @@ Query query = session.createQuery(hql);
 int result = query.executeUpdate();
 System.out.println("Rows affected: " + result);
 ```
-**Pagination using Query**
+
+**Pagination using Query:**
+
 ```sql
 String hql = "FROM Employee";
 Query query = session.createQuery(hql);
@@ -362,6 +395,7 @@ query.setFirstResult(1);
 query.setMaxResults(10);
 List results = query.list();
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
@@ -371,7 +405,8 @@ List results = query.list();
 **hibernate.cfg.xml**: This file has database connection details  
 
 **hbm.xml or Annotation**: Defines the database table mapping with POJO. Also defines the relation between tables in java way.  
-**SessionFactory**:  
+**SessionFactory**: 
+
 * There will be a session factory per database.
 * The SessionFacory is built once at start-up
 * It is a thread safe class
@@ -384,6 +419,7 @@ List results = query.list();
 * Session should be closed once the task is completed
 
 ## Q. Explain Session object in Hibernate?
+
 A Session is used to get a physical connection with a database. The Session object is lightweight and designed to be instantiated each time an interaction is needed with the database. Persistent objects are saved and retrieved through a Session object.
 
 The lifecycle of a Session is bounded by the beginning and end of a logical transaction. The main function of the Session is to offer create, read and delete operations for instances of mapped entity classes. Instances may exist in one of three states:
@@ -412,11 +448,13 @@ catch (Exception e) {
    session.close();
 }
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. How transaction management works in Hibernate?
+
 A **Transaction** is a sequence of operation which works as an atomic unit. A transaction only completes if all the operations completed successfully. A transaction has the Atomicity, Consistency, Isolation, and Durability properties (ACID).
 
 In hibernate framework, **Transaction interface** that defines the unit of work. It maintains abstraction from the transaction implementation (JTA, JDBC). A transaction is associated with Session and instantiated by calling **session.beginTransaction()**.
@@ -434,6 +472,7 @@ In hibernate framework, **Transaction interface** that defines the unit of work.
 |boolean wasRolledBack()    |checks if the transaction is rolledback successfully.|
 
 Example:
+
 ```java
 Transaction transObj = null;
 Session sessionObj = null;
@@ -452,10 +491,12 @@ try {
     sessionObj.close(); 
 }
 ```
+
 ## Q. Explain the Criteria object in Hibernate?
+
 The Criteria API allows to build up a criteria query object programmatically; the `org.hibernate.Criteria` interface defines the available methods for one of these objects. The Hibernate Session interface contains several overloaded `createCriteria()` methods.
 
-**1. Restrictions with Criteria**  
+**1. Restrictions with Criteria:**
 
 ```java
 Criteria cr = session.createCriteria(Employee.class);
@@ -492,7 +533,8 @@ cr.add(Restrictions.isEmpty("salary"));
 cr.add(Restrictions.isNotEmpty("salary"));
 ```
 
-**2. Logical Expression Restrictions**  
+**2. Logical Expression Restrictions:**
+
 ```java
 Criteria cr = session.createCriteria(Employee.class);
 
@@ -510,7 +552,8 @@ cr.add( andExp );
 List results = cr.list();
 ```
 
-**3. Pagination Using Criteria**  
+**3. Pagination Using Criteria:**
+
 ```java
 Criteria cr = session.createCriteria(Employee.class);
 cr.setFirstResult(1);
@@ -518,8 +561,10 @@ cr.setMaxResults(10);
 List results = cr.list();
 ```
 
-**4. Sorting the Results**  
-The Criteria API provides the **org.hibernate.criterion.Order** class to sort your result set in either ascending or descending order, according to one of your object's properties. 
+**4. Sorting the Results:**
+
+The Criteria API provides the **org.hibernate.criterion.Order** class to sort your result set in either ascending or descending order, according to one of your object's properties.
+
 ```java
 Criteria cr = session.createCriteria(Employee.class);
 
@@ -535,8 +580,10 @@ cr.addOrder(Order.asc("salary"));
 List results = cr.list();
 ```
 
-**5. Projections & Aggregations**  
+**5. Projections & Aggregations:**
+
 The Criteria API provides the **org.hibernate.criterion.Projections** class, which can be used to get average, maximum, or minimum of the property values. The Projections class is similar to the Restrictions class, in that it provides several static factory methods for obtaining **Projection** instances.
+
 ```java
 Criteria cr = session.createCriteria(Employee.class);
 
@@ -559,9 +606,10 @@ cr.setProjection(Projections.min("salary"));
 cr.setProjection(Projections.sum("salary"));
 ```
 
-**Criteria Queries Example**  
+**Criteria Queries Example:**
 
 Employee.java
+
 ```java
 public class Employee {
    private int id;
@@ -610,7 +658,9 @@ public class Employee {
    }
 }
 ```
+
 EMPLOYEE.sql
+
 ```sql
 create table EMPLOYEE (
    id INT NOT NULL auto_increment,
@@ -620,7 +670,9 @@ create table EMPLOYEE (
    PRIMARY KEY (id)
 );
 ```
+
 Hibernate Mapping File
+
 ```xml
 <?xml version = "1.0" encoding = "utf-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC 
@@ -645,7 +697,9 @@ Hibernate Mapping File
    </class>
 </hibernate-mapping>
 ```
+
 ManageEmployee.java
+
 ```java
 import java.util.List; 
 import java.util.Date;
@@ -782,8 +836,10 @@ public class ManageEmployee {
    }
 }
 ```
+
 Output
-```
+
+```java
 cmd> java ManageEmployee
 .......VARIOUS LOG MESSAGES WILL DISPLAY HERE........
 
@@ -793,18 +849,21 @@ First Name: Mohd  Last Name: Yasee  Salary: 3000
 Total Coint: 4
 Total Salary: 15000
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is a One-to-One association in Hibernate?
+
 A **One-to-One** Association is similar to Many-to-One association with a difference that the column will be set as unique i.e. Two entities are said to be in a One-to-One relationship if one entity has only one occurrence in the other entity. For example, an address object can be associated with a single employee object. However, these relationships are rarely used in the relational table models and therefore, we won’t need this mapping too often.
 
-In One-to-One association, the source entity has a field that references another target entity. The `@OneToOne` JPA annotation is used to map the source entity with the target entity. 
+In One-to-One association, the source entity has a field that references another target entity. The `@OneToOne` JPA annotation is used to map the source entity with the target entity.
 
 Example: Hibernate One to One Mapping Annotation  
 
-**hibernate-annotation.cfg.xml**  
+**hibernate-annotation.cfg.xml:**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
@@ -826,7 +885,9 @@ Example: Hibernate One to One Mapping Annotation
     </session-factory>
 </hibernate-configuration>
 ```
+
 For hibernate one to one mapping annotation configuration, model classes are the most important part.
+
 ```java
 package com.example.hibernate.model;
 
@@ -867,6 +928,7 @@ public class Txn1 {
         //Getter-Setter methods, omitted for clarity 
 }
 ```
+
 ```java
 
 package com.example.hibernate.model;
@@ -907,7 +969,9 @@ public class Customer1 {
         //Getter-Setter methods
 }
 ```
-**Hibernate SessionFactory Utility class**  
+
+**Hibernate SessionFactory Utility class:**
+
 ```java
 
 package com.example.hibernate.util;
@@ -948,7 +1012,9 @@ public class HibernateAnnotationUtil {
     }
 }
 ```
-**Hibernate One to One Mapping Annotation Example Test Program**  
+
+**Hibernate One to One Mapping Annotation Example Test Program:**
+
 ```java
 
 package com.example.hibernate.main;
@@ -1036,8 +1102,10 @@ public class HibernateOneToOneAnnotationMain {
 	}
 }
 ```
+
 Output
-```
+
+```java
 Hibernate Annotation Configuration loaded
 Hibernate Annotation serviceRegistry created
 Session created using annotations configuration
@@ -1052,11 +1120,13 @@ Annotation Example. Transaction Details=
 20, 100.0, Alex Kr, Alex@yahoo.com, San Jose, USA
 Closing SessionFactory
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is hibernate caching? Explain Hibernate first level cache?
+
 Hibernate Cache can be very useful in gaining fast application performance if used correctly. The idea behind cache is to reduce the number of database queries, hence reducing the throughput time of the application.
 
 Hibernate comes with different types of Cache:
@@ -1070,6 +1140,7 @@ Hibernate Second Level cache is disabled by default but we can enable it through
 **Query Cache**: Hibernate can also cache result set of a query. Hibernate Query Cache doesn’t cache the state of the actual entities in the cache; it caches only identifier values and results of value type. So it should always be used in conjunction with the second-level cache.
 
 Example: Hibernate Caching – First Level Cache
+
 ```java
 
 package com.example.hibernate.main;
@@ -1142,8 +1213,10 @@ public class HibernateCacheExample {
 	}
 }
 ```
+
 Output
-```
+
+```java
 Hibernate Configuration loaded
 Hibernate serviceRegistry created
 Hibernate: select employee0_.emp_id as emp_id1_1_0_, employee0_.emp_name as emp_name2_1_0_, employee0_.emp_salary as emp_sala3_1_0_, address1_.emp_id as emp_id1_0_1_, address1_.address_line1 as address_2_0_1_, address1_.city as city3_0_1_, address1_.zipcode as zipcode4_0_1_ from EMPLOYEE employee0_ left outer join ADDRESS address1_ on employee0_.emp_id=address1_.emp_id where employee0_.emp_id=?
@@ -1163,11 +1236,13 @@ Hibernate: select employee0_.emp_id as emp_id1_1_0_, employee0_.emp_name as emp_
 8:: Name=David, Zipcode=95051
 Session Contains Employee with id=2?true
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is second level cache in Hibernate?
+
 **Hibernate second level cache** uses a common cache for all the session object of a session factory. It is useful if you have multiple session objects from a session factory. **SessionFactory** holds the second level cache data. It is global for all the session objects and not enabled by default.
 
 Different vendors have provided the implementation of Second Level Cache.
@@ -1185,13 +1260,15 @@ Each implementation provides different cache usage functionality. There are four
 * **transactional**: caching will work for transaction.
 
 The cache-usage property can be applied to class or collection level in hbm.xml file.
+
 ```xml
 <cache usage="read-only" />  
 ```
+
 Example: Hibernate Second Level Cache
 
-
 Step 01: Create the persistent class using Maven
+
 ```java
 package com.example;    
 import javax.persistence.*;  
@@ -1233,7 +1310,9 @@ public class Employee {
    }    
 }    
 ```
+
 Step 02: Add project information and configuration in pom.xml file.
+
 ```xml
 <dependency>  
     <groupId>org.hibernate</groupId>  
@@ -1259,7 +1338,9 @@ Step 02: Add project information and configuration in pom.xml file.
     <version>5.2.16.Final</version>  
 </dependency>
 ```
+
 Step 03: Create the Configuration file (hibernate.cfg.xml)
+
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>    
 <!DOCTYPE hibernate-configuration PUBLIC    
@@ -1283,7 +1364,9 @@ Step 03: Create the Configuration file (hibernate.cfg.xml)
     </session-factory>    
 </hibernate-configuration>    
 ```
+
 Step 04: Create the class that retrieves the persistent object
+
 ```java
 package com.example;    
     
@@ -1316,11 +1399,13 @@ public class FetchTest {
    }    
 }    
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What are concurrency strategies?
+
 The READ_WRITE strategy is an asynchronous cache concurrency mechanism and to prevent data integrity issues (e.g. stale cache entries), it uses a locking mechanism that provides unit-of-work isolation guarantees.
 
 In hibernate, cache concurrency strategy can be set globally using the property hibernate.cache. default_cache_concurrency_strategy. The allowed values are,
@@ -1331,6 +1416,7 @@ In hibernate, cache concurrency strategy can be set globally using the property 
 * **transactional**: caching will work for transaction. supported by EHCache, Infinispan.
 
 Example: Inserting data ( READ_WRITE strategy )
+
 ```java
 @Override
 public boolean afterInsert(
@@ -1357,7 +1443,9 @@ public boolean afterInsert(
     }
 }
 ```
+
 For an entity to be cached upon insertion, it must use a SEQUENCE generator, the cache being populated by the EntityInsertAction:
+
 ```java
 @Override
 public void doAfterTransactionCompletion(boolean success,
@@ -1380,19 +1468,23 @@ public void doAfterTransactionCompletion(boolean success,
     postCommitInsert( success );
 }
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is Lazy loading in hibernate?
+
 Hibernate defaults to a lazy fetching strategy for all entities and collections. Lazy loading in hibernate improves the performance. It loads the child objects on demand. To enable lazy loading explicitly you must use **fetch = FetchType.LAZY** on a association which you want to lazy load when you are using hibernate annotations.
 
 Example:
+
 ```java
 @OneToMany( mappedBy = "category", fetch = FetchType.LAZY )
 private Set<ProductEntity> products; 
 ```
 ## Q. Explain the persistent classes in Hibernate?
+
 Persistence class are simple POJO classes in an application. It works as implementation of the business application for example Employee, department etc. It is not necessary that all instances of persistence class are defined persistence.
 
 There are following main rules of persistent classes
@@ -1460,11 +1552,13 @@ public class Employee {
     }
 }
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. Explain some of the elements of hbm.xml?
+
 Hibernate mapping file is used by hibernate framework to get the information about the mapping of a POJO class and a database table.
 
 It mainly contains the following mapping information:
@@ -1481,6 +1575,7 @@ Elements of the Hibernate mapping file:
 * **property**: It is used to define the mapping of a POJO class property to database table column.
 
 Syntax
+
 ```xml
 <hibernate-mapping>
  
@@ -1495,13 +1590,15 @@ Syntax
  
 </hibernate-mapping>
 ```
+
 ## Q. What is Java Persistence API (JPA)?
+
 Java Persistence API is a collection of classes and methods to persistently store the vast amounts of data into a database.
 The Java Persistence API (JPA) is one possible approach to ORM. Via JPA the developer can map, store, update and retrieve data from relational databases to Java objects and vice versa. JPA can be used in Java-EE and Java-SE applications.
 
 JPA metadata is typically defined via annotations in the Java class. Alternatively, the metadata can be defined via XML or a combination of both. A XML configuration overwrites the annotations.
 
-**Relationship Mapping**  
+**Relationship Mapping:**
 
 JPA allows to define relationships between classes. Classes can have one to one, one to many, many to one, and many to many relationships with other classes. A relationship can be bidirectional or unidirectional, e.g. in a bidirectional relationship both classes store a reference to each other while in an unidirectional case only one class has a reference to the other class. 
 
@@ -1514,7 +1611,7 @@ Relationship annotations:
 
 ![Java Exception](https://github.com/learning-zone/java-interview-questions/blob/master/assets/jpa_class_level_architecture.png)
 
-**JPA - Architecture**  
+**JPA - Architecture:**
 
 |Units	                |Description                                                    |
 |-----------------------|---------------------------------------------------------------|
@@ -1530,6 +1627,7 @@ Relationship annotations:
 </div>
 
 ## Q. Name some important interfaces of Hibernate framework?
+
 * **Session Interface**: This is the primary interface used by hibernate applications
 The instances of this interface are lightweight and are inexpensive to create and destroy
 Hibernate sessions are not thread safe
@@ -1544,11 +1642,13 @@ The instance of this interface is used by the application in order to specify th
 * **Query and Criteria Interface**: This interface allows the user to perform queries and also control the flow of the query execution
 
 ## Q. What is Hibernate SessionFactory and how to configure it?
+
 SessionFactory can be created by providing Configuration object, which will contain all DB related property details pulled from either hibernate.cfg.xml file or hibernate.properties file. SessionFactory is a factory for Session objects.
 
 We can create one SessionFactory implementation per database in any application. If your application is referring to multiple databases, then we need to create one SessionFactory per database.
 
 The SessionFactory is a heavyweight object; it is usually created during application start up and kept for later use. The SessionFactory is a thread safe object and used by all the threads of an application.
+
 ```java
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -1597,11 +1697,13 @@ public class HibernateUtil {
     }
 }
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is the difference between opensession and getcurrentsession in hibernate?
+
 Hibernate SessionFactory getCurrentSession() method returns the session bound to the context. Since this session object belongs to the hibernate context, we don't need to close it. Once the session factory is closed, this session object gets closed.
 
 Hibernate SessionFactory openSession() method always opens a new session. We should close this session object once we are done with all the database operations.
@@ -1614,6 +1716,7 @@ Hibernate SessionFactory openSession() method always opens a new session. We sho
 |Configuration      |You do not need to configure any property to call this method|You need to configure additional property “hibernate.current_session_context_class” to call getCurrentSession method, otherwise it will throw exceptions.|
 
 Example: openSession()
+
 ```java
 Transaction transaction = null;
 Session session = HibernateUtil.getSessionFactory().openSession();
@@ -1634,7 +1737,9 @@ try {
     }            
 }           
 ```
+
 Example: getCurrentSession()
+
 ```java
 Transaction transaction = null;
 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
@@ -1655,11 +1760,13 @@ try {
     }           
 }     
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is difference between Hibernate Session get() and load() method?
+
 Hibernate Session class provides two method to access object e.g. `session.get()` and `session.load()`.The difference between get() vs load() method is that get() involves database hit if object doesn't exists in **Session Cache** and returns a fully initialized object which may involve several database call while load method can return proxy in place and only initialize the object or hit the database if any method other than getId() is called on persistent or entity object. This lazy initialization can save couple of database round-trip which result in better performance.
 
 |load() 	                                    |get() 
@@ -1669,6 +1776,7 @@ Hibernate Session class provides two method to access object e.g. `session.get()
 |load() just returns a proxy by default and database won't be hit until the proxy is first invoked.|get() will hit the database immediately.| 
 
 ## Q. What are different states of an entity bean?
+
 The Entity bean has three states:
 
 **1. Transient**: Transient objects exist in heap memory. Hibernate does not manage transient objects or persist changes to transient objects. Whenever pojo class object created then it will be in the Transient state.
@@ -1682,6 +1790,7 @@ Any instance returned by a **get()** or **load()** method is persistent state ob
 **3. Detached**: Detached objects have a representation in the database, but changes to the object will not be reflected in the database, and vice-versa. A detached object can be created by closing the session that it was associated with, or by evicting it from the session with a call to the session's `evict()` method.
 
 Example:
+
 ```java
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -1715,8 +1824,10 @@ public class ObjectStatesDemo {
     }
 }
 ```
+
 Output
-```
+
+```java
 Hibernate: 
     insert 
     into
@@ -1725,7 +1836,9 @@ Hibernate:
     values
         (?, ?, ?, ?, ?)
 ```
+
 In The Database :
+
 ```sql
 mysql> select * from student;
 +-----+--------+--------+-------+------+
@@ -1735,11 +1848,13 @@ mysql> select * from student;
 +-----+--------+--------+-------+------+
 1 row in set (0.05 sec)
 ```
+
 <div align="right">
     <b><a href="#">↥ back to top</a></b>
 </div>
 
 ## Q. What is difference between merge() and update() methods in Hibernate?
+
 Both update() and merge() methods in hibernate are used to convert the object which is in detached state into persistence state. But there are different situation where we should be used update() and where should be used merge() method in hibernate
 
 ```java
@@ -1769,6 +1884,7 @@ session.update(emp1);
 session2.merge(emp1); //it merge the object state with emp2
 session2.update(emp1); //Now it will work with exception
 ```
+
 In the hibernate session we can maintain only one employee object in persistent state with same primary key, while converting a detached object into persistent, if already that session has a persistent object with the same primary key then hibernate throws an Exception whenever update() method is called to reattach a detached object with a session. In this case we need to call **merge()** method instead of **update()** so that hibernate copies the state changes from detached object into persistent object and we can say a detached object is converted into a persistent object.
 
 <div align="right">
